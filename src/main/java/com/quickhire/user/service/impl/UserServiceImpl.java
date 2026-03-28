@@ -28,10 +28,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void deleteUser(Long id) {
+        userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.deleteById(id);
+    }
+
+    @Override
     public UserResponseDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return mapToDTO(user);
+    }
+
+    @Override
+    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // only update fields that are provided
+        if (dto.getFullName() != null) user.setFullName(dto.getFullName());
+        if (dto.getResumeUrl() != null) user.setResumeUrl(dto.getResumeUrl());
+        if (dto.getLogoUrl() != null) user.setLogoUrl(dto.getLogoUrl());
+
+        return mapToDTO(userRepository.save(user));
     }
 
     @Override
@@ -48,6 +68,8 @@ public class UserServiceImpl implements UserService {
         dto.setEmail(user.getEmail());
         dto.setFullName(user.getFullName());
         dto.setRole(user.getRole().name());
+        dto.setResumeUrl(user.getResumeUrl());
+        dto.setLogoUrl(user.getLogoUrl());
         return dto;
     }
 }

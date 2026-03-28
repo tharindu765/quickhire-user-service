@@ -28,6 +28,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column
+    private String resumeUrl;
+
+    @Column
+    private String logoUrl;
+
     public enum Role {
         CLIENT, FREELANCER
     }
